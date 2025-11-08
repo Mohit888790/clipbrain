@@ -1,7 +1,7 @@
-# Use Python 3.11 slim image
+# ClipBrain Backend Dockerfile
 FROM python:3.11-slim
 
-# Install system dependencies
+# Install system dependencies including ffmpeg
 RUN apt-get update && apt-get install -y \
     ffmpeg \
     && rm -rf /var/lib/apt/lists/*
@@ -9,14 +9,14 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /app
 
-# Copy requirements and install Python dependencies
-COPY backend/requirements.txt /app/backend/requirements.txt
-RUN pip install --no-cache-dir -r backend/requirements.txt
+# Copy requirements first for better caching
+COPY backend/requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt
 
 # Copy application code
 COPY backend /app/backend
 
-# Copy start script
+# Copy and setup start script
 COPY start.sh /app/start.sh
 RUN chmod +x /app/start.sh
 
