@@ -16,8 +16,12 @@ RUN pip install --no-cache-dir -r backend/requirements.txt
 # Copy application code
 COPY backend /app/backend
 
+# Copy start script
+COPY start.sh /app/start.sh
+RUN chmod +x /app/start.sh
+
 # Expose port
 EXPOSE 8000
 
-# Start command - use shell form to allow environment variable expansion
-CMD uvicorn backend.main:app --host 0.0.0.0 --port ${PORT:-8000}
+# Start command
+CMD ["/app/start.sh"]
